@@ -70,18 +70,22 @@ export default {
           console.log(res);
           if(res.meta.status !== 200) {
             this.$message.error('登录失败')
-          } 
-          this.$message({
-            message: '登录成功',
-            type: 'success'
-          })
-          // 1.登录成功之后的 token 保存到客户端的 sessionStorage 中
-          window.sessionStorage.setItem('token', res.data.token)
-          // 2.通过路由跳转到后台主页，路由地址是 /home
-          this.$router.push('/home')
+          } else {
+            this.$message({
+              message: '登录成功',
+              type: 'success'
+            })
+            // 1.登录成功之后的 token 保存到客户端的 sessionStorage 中
+            window.sessionStorage.setItem('token', res.data.token)
+            // 2.通过路由跳转到后台主页，路由地址是 /home
+            this.$router.push('/home')
+          }
         })
       })
     }
+  },
+  beforeDestroy() {
+    this.$bus.$emit('getName', this.loginForm.username)
   },
 }
 </script>
