@@ -53,13 +53,20 @@ export function deleteUser(id) {
 }
 
 
-export function Distselector(obj) {
+export function Distselector(id,rid) {
   return request({
     method: 'put',
-    url: `/users/${obj.id}/role`,
+    url: `/users/${id}/role`,
     data: {
-      rid: obj.rid
+      rid: rid
     }
+  })
+}
+
+// 根据 ID 查询角色
+export function queryRoles() {
+  return request({
+    url: `/roles`
   })
 }
 

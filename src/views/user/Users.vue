@@ -1,7 +1,10 @@
 <template>
   <div>
     <!-- 面包屑导航区域 -->
-    <breadcrumb></breadcrumb>
+    <breadcrumb>
+      <span slot="first">用户管理</span>
+      <span slot="second">用户列表</span>
+    </breadcrumb>
 
     <!-- 卡片视图区域 -->
     <el-card class="box-card">
@@ -54,7 +57,7 @@
               <el-button
                 type="warning"
                 icon="el-icon-s-tools"
-                @click="showdistdialogVisible(scope.row.id)"
+                @click="showdistdialogVisible(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -116,20 +119,22 @@
 
       <!-- 点击 分配角色 弹出的对话框 -->
       <el-dialog title="分配角色" :visible.sync="dialogDistributionVisible">
-        <el-form>
-          <el-select v-model="seletor" placeholder="请选择">
+        <p>当前的用户：{{currentObjInfoList.username}}</p>
+        <p>当前的角色：{{currentObjInfoList.role_name}}</p>
+        <p>分配新角色：
+          <el-select v-model="selectedRoleId" placeholder="请选择">
             <el-option
-              v-for="item in distributionList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
             ></el-option>
           </el-select>
-        </el-form>
+        </p>
         <!-- 底部区域 -->
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogEditVisible = false">取 消</el-button>
-          <el-button type="primary" @click="distSelector">确 定</el-button>
+          <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
         </div>
       </el-dialog>
     </el-card>
@@ -147,7 +152,8 @@ import {
   deleteUser,
   queryUser,
   editUser,
-  Distselector
+  Distselector,
+  queryRoles
 } from 'network/users'
 
 import {formatDate} from 'common/utils'
@@ -218,26 +224,6 @@ export default {
       },
       // 查询到的用户信息对象
       EditForm: {},
-      distributionList:[
-        {
-          value: '选项1',
-          label: '超级用户'
-        },
-        {
-          value: '选项2',
-          label: '管理员'
-        },
-        {
-          value: '选项3',
-          label: '普通用户'
-        },
-        {
-          value: '选项4',
-          label: '测试账号'
-        }
-      ],
-      Idandrid: {},
-      seletor: '选择角色',
       total: 0,
       value: true,
       input: '',
@@ -254,7 +240,13 @@ export default {
           {required: true, message: '请输入手机号', trigger: 'blur'},
           {validator: checkMobile, trigger: 'blur'}
         ]
-      }
+      },
+      // 用户对应角色信息列表
+      currentObjInfoList: {},
+      // 所有角色的数据列表
+      roleList: [],
+      // 已选中的角色id值
+      selectedRoleId: '',
     }
   },
   methods: {
@@ -271,7 +263,6 @@ export default {
             type: 'error'
           })
         }
-        console.log(res);
         this.userlist = res.data.users
         this.total = res.data.total
       })
@@ -317,7 +308,7 @@ export default {
 
      // 根据 id 删除用户功能
     handleDelete(id) {
-      this.$confirm('确定永久删除改账户，是否继续？', '提示', {
+      this.$confirm('确定永久删除该账户，是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -337,8 +328,6 @@ export default {
             this.getUserList()
           }
         })
-        // 2.再删掉前端页面中相应的节点
-        rows.splice(index, 1);
       }).catch(() => {    //点击取消后要执行的代码
         this.$message({
             type: 'info',
@@ -393,33 +382,32 @@ export default {
       })
     },
 
-    showdistdialogVisible(id) {
-      this.dialogDistributionVisible = true
-      queryUser(id).then(res => {
-        this.Idandrid.id = res.data.id
-        this.Idandrid.rid = res.data.rid
+    showdistdialogVisible(obj) {
+      this.currentObjInfoList = obj
+      queryRoles().then(res => {
+        this.roleList = res.data
+        console.log(this.roleList);
       })
-      console.log(this.Idandrid);
+      this.dialogDistributionVisible = true
     },
 
-    distSelector() {
-      Distselector(this.Idandrid).then(res => {
+    saveRoleInfo() {
+      if(!this.selectedRoleId) return this.$message({type:'error',message:"请选择要分配的角色"})
+      Distselector(this.currentObjInfoList.id,this.selectedRoleId).then(res => {
         if(res.meta.status !== 200) {
           return this.$message({
-            message: '角色更新失败',
-            type: 'error'
+            type: 'error',
+            message: '角色设置失败'
           })
-        } else {
-            this.$message({
-              message: '角色更新成功',
-              type: 'success'
-            })
-            this.dialogDistributionVisible = false
-            this.reload()
-          }
+        }
+        this.$message({
+          type: 'success',
+          message: '角色设置成功'
+        })
+        this.dialogDistributionVisible = false;
+        this.getUserList()
       })
     },
-
 
     /**
      * 事件监听相关的方法
