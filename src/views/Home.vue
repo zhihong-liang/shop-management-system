@@ -95,7 +95,6 @@ export default {
       getMenu().then(res => {
         if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
         this.menuList = res.data
-        console.log(this.menuList);
       })
     },
     // 点击按钮，菜单栏折叠收起
