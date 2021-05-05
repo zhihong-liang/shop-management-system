@@ -49,8 +49,10 @@
       <!-- 右侧内容主体 -->
       <el-main>
 
-        <!-- 路由占位符 -->
-        <router-view v-if="isRouterAlive"></router-view>
+        <keep-alive>
+          <!-- 路由占位符 -->
+          <router-view v-if="isRouterAlive"></router-view>
+        </keep-alive>
 
       </el-main>
     </el-container>
@@ -124,9 +126,6 @@ export default {
       window.sessionStorage.setItem('username',data)
     })
     this.Username = window.sessionStorage.getItem('username')
-  },
-  mounted() {
-    
   },
 }
 </script>
