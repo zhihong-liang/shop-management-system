@@ -49,7 +49,7 @@
       <!-- 右侧内容主体 -->
       <el-main>
 
-        <keep-alive>
+        <keep-alive exclude="goodsList">
           <!-- 路由占位符 -->
           <router-view v-if="isRouterAlive"></router-view>
         </keep-alive>

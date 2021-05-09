@@ -3,7 +3,7 @@
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :page-sizes="[1,2,3,4]"
+      :page-sizes="[1,2,3,4,5,6,7,8,9,10]"
       :page-size="queryInfo.pagesize"
       :current-page="queryInfo.pagenum"
       layout="total, sizes, prev, pager, next, jumper"

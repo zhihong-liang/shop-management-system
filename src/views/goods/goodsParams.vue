@@ -356,4 +356,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.el-cascader {
+  margin-top: 15px;
+}
 </style>

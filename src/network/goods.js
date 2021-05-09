@@ -91,3 +91,29 @@ export function deleteTargetParams(id,attrId) {
   })
 }
 
+// 商品列表页面的全部网络请求方法
+// 获取页面的商品列表数据
+export function getGoodsData(obj) {
+  return request({
+    url: 'goods',
+    params: obj
+  })
+}
+
+// 添加商品
+export function addGoodsData(obj) {
+  return request({
+    method: 'post',
+    url: 'goods',
+    data: obj
+  })
+}
+
+// 删除商品
+export function deleteGoodsData(id) {
+  return request({
+    method: 'delete',
+    url: `goods/${id}`
+  })
+}
+
