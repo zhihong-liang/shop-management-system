@@ -158,16 +158,12 @@ export default {
   },
   created() {
     this.getGoodsList()
-    console.log('商品列表页面被创建');
   },
   mounted() {
     this.$bus.$on('pagerefresh', () => {
       this.getGoodsList()
     })
   },
-  destroyed() {
-    console.log('商品列表页面被销毁');
-  }
 }
 </script>
 <style lang="less" scoped>

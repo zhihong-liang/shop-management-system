@@ -246,8 +246,8 @@ export default {
         const Form = JSON.parse(JSON.stringify(this.addForm))
         // 处理goods_cat 转化为字符串
         Form.goods_cat = Form.goods_cat.join(',')
+
         addGoodsData(Form).then(res => {
-          console.log(res);
           if(res.meta.status !== 201) {
             return this.$message.error(res.meta.msg)
           }
@@ -284,14 +284,12 @@ export default {
       const filePath = file.response.data.tmp_path
       const index = this.addForm.pics.findIndex(i => i.pic === filePath)
       this.addForm.pics.splice(index,1);
-      console.log(this.addForm);
     },
     // 
     getPhotoPath(response) {
       const pathObj = {}
       pathObj.pic = response.data.tmp_path
       this.addForm.pics.push(pathObj)
-      console.log(this.addForm);
     },
   },
   computed: {
